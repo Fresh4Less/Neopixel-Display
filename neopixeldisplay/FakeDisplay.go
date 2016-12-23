@@ -4,6 +4,10 @@ type FakeDisplay struct {
 	count int
 }
 
+func NewFakeDisplay(count int) *FakeDisplay {
+	return &FakeDisplay{count}
+}
+
 func (fd *FakeDisplay) Set(index int, color Color) {
 }
 
