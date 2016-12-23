@@ -12,7 +12,7 @@ func main() {
 	mode := flag.String("m", "console", "Mode (neopixel or console)")
 	flag.Parse()
 	if *mode == "neopixel" {
-		display = neopixeldisplay.NewNeopixelDisplay(80, 64, 255)
+		display = neopixeldisplay.NewNeopixelDisplay(18, 64, 255)
 	} else {
 		display = neopixeldisplay.NewConsoleColorDisplay(64, [][]int{[]int{8, 8}})
 	}
