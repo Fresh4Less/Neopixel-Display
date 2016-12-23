@@ -14,9 +14,10 @@ func NewAnimationView(target *ColorFrame) *AnimationView {
 }
 
 //cancels previous animation
-func (av *AnimationView) PlayAnimation(frames []ColorFrame, fps float32, loop bool) {
+func (av *AnimationView) PlayAnimation(frames []ColorFrame, fps float32, loop bool) chan int {
 	av.animationIndex++
 	animationIndex := av.animationIndex
+	doneChan := make(chan int)
 	go func() {
 		loopCount := 0
 		for loop || loopCount == 0 {
@@ -26,9 +27,12 @@ func (av *AnimationView) PlayAnimation(frames []ColorFrame, fps float32, loop bo
 				time.Sleep(time.Duration(1000.0/fps)*time.Millisecond)
 				if av.animationIndex != animationIndex {
 					//someone has started a new animation and cancelled this one
+					doneChan <- animationIndex
 					return
 				}
 			}
 		}
+		doneChan <- animationIndex
 	}()
+	return doneChan
 }
