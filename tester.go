@@ -11,10 +11,10 @@ func main() {
 	var display neopixeldisplay.PixelDisplay
 	mode := flag.String("m", "console", "Mode (neopixel or console)")
 	flag.Parse()
-	if *mode == "neopixel" {
-		display = neopixeldisplay.NewNeopixelDisplay(18, 64, 255)
-	} else {
+	if *mode == "console" {
 		display = neopixeldisplay.NewConsoleColorDisplay(64, [][]int{[]int{8, 8}})
+	} else {
+		display = neopixeldisplay.NewNeopixelDisplay(18, 64, 255)
 	}
 	screen := neopixeldisplay.NewScreenView(display, 0, 8, 8, 1.0, neopixeldisplay.Error)
 
