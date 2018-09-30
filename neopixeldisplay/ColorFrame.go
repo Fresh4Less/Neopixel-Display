@@ -63,7 +63,7 @@ type DisplayView interface  {
 
 type ColorFrame struct {
 	Width, Height int
-	colors [][]Color
+	Colors [][]Color
 	parent DisplayView
 }
 
@@ -84,19 +84,19 @@ func MakeColorFrame(width, height int, color Color) ColorFrame {
 
 //returns x, y, errorCode, error
 func (c ColorFrame) calcOverflowPosition(x, y int, overflowMode ColorOverflowMode) (int, int, int, error) {
-	if y < 0 || x < 0 || y >= len(c.colors) || x >= len(c.colors[y]) {
+	if y < 0 || x < 0 || y >= len(c.Colors) || x >= len(c.Colors[y]) {
 		switch overflowMode {
 			case Error:
 				width := "?"
-				if y >= 0 && y < len(c.colors) {
-					width = fmt.Sprintf("%v", len(c.colors))
+				if y >= 0 && y < len(c.Colors) {
+					width = fmt.Sprintf("%v", len(c.Colors))
 				}
 				return 0, 0, 1, errors.New(fmt.Sprintf("ColorFrame.Set: tried to set (%v,%v) but the frame has dimensions (%v,%v)",
-					x, y, width, len(c.colors)))
+					x, y, width, len(c.Colors)))
 			case Clip:
 				return 0, 0, 2, nil
 			case Wrap:
-				return x % len(c.colors[y]), y % len(c.colors), 0, nil
+				return x % len(c.Colors[y]), y % len(c.Colors), 0, nil
 		}
 	}
 	return x, y, 0, nil
@@ -111,7 +111,7 @@ func (c ColorFrame) Get(x, y int, overflowMode ColorOverflowMode) Color {
 		return MakeColor(0,0,0)
 	}
 
-	return c.colors[y][x]
+	return c.Colors[y][x]
 }
 func (c ColorFrame) Set(x, y int, color Color, overflowMode ColorOverflowMode) {
 	x, y, errorCode, err := c.calcOverflowPosition(x, y, overflowMode)
@@ -122,21 +122,21 @@ func (c ColorFrame) Set(x, y int, color Color, overflowMode ColorOverflowMode) {
 		return
 	}
 
-	c.colors[y][x] = color
+	c.Colors[y][x] = color
 }
 
 func (c ColorFrame) SetAll(color Color) {
-	for i := 0; i < len(c.colors); i++ {
-		for j := 0; j < len(c.colors[i]); j++ {
-			c.colors[i][j] = color
+	for i := 0; i < len(c.Colors); i++ {
+		for j := 0; j < len(c.Colors[i]); j++ {
+			c.Colors[i][j] = color
 		}
 	}
 }
 
 func (c ColorFrame) SetRect(x, y int, source ColorFrame, overflowMode ColorOverflowMode) {
-	for i := 0; i < len(source.colors); i++ {
-		for j := 0; j < len(source.colors[i]); j++ {
-			c.Set(x+j, y+i, source.colors[i][j], overflowMode)
+	for i := 0; i < len(source.Colors); i++ {
+		for j := 0; j < len(source.Colors[i]); j++ {
+			c.Set(x+j, y+i, source.Colors[i][j], overflowMode)
 		}
 	}
 }
