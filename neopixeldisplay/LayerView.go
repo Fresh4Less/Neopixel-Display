@@ -6,6 +6,7 @@ package neopixeldisplay
 type LayerView struct {
 	target *ColorFrame
 	layers []*LayerData
+	isDeleting bool chan
 }
 
 type LayerData struct {
@@ -14,7 +15,7 @@ type LayerData struct {
 }
 
 func NewLayerView(target *ColorFrame) *LayerView {
-	return &LayerView{target, nil}
+	return &LayerView{target, nil, make(bool chan, 1)}
 }
 
 func (lv *LayerView) AddLayer(combineMode ColorCombineMode) *LayerData {
@@ -28,6 +29,8 @@ func (lv *LayerView) AddLayer(combineMode ColorCombineMode) *LayerData {
 
 //returns true if the layer was found and deleted, false otherwise
 func (lv *LayerView) DeleteLayer(layer *LayerData) bool {
+	lv.isDeleting <- true
+	defer func(){<-lv.isDeleting}()
 	for i := range lv.layers {
 		if lv.layers[i] == layer {
 			lv.layers = append(lv.layers[:i], lv.layers[i+1:]...)
